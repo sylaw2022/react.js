@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+*.local
+.next
+out
+
+# Database
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Logs
+*.log
+log
+out.log
+test-output.log
+
+# Test results
+test-results/
+playwright-report/
+coverage/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+

@@ -1,0 +1,23 @@
+# Files and directories to ignore during Next.js compilation
+# This prevents Turbopack from analyzing these files
+
+# Test files and directories
+tests/
+**/*.test.js
+**/*.test.jsx
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.jsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Scripts directory
+scripts/
+
+# Log files
+test-output.log
+*.log
+
+# Vitest config (not needed by Next.js)
+vitest.config.js
