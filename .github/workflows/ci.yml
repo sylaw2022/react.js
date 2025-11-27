@@ -67,12 +67,25 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       
+      - name: Debug SMTP Configuration
+        if: always()
+        run: |
+          echo "=== SMTP Configuration Debug ==="
+          echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
+          echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
+          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME && '***SET***' || '***NOT SET***' }}"
+          echo "SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD && '***SET***' || '***NOT SET***' }}"
+          echo "SMTP_USERNAME (masked): ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD (masked): ${{ secrets.SMTP_PASSWORD }}"
+          echo "================================"
+      
       - name: Send test job notification
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
           server_port: ${{ secrets.SMTP_PORT || 587 }}
+          secure: false
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: |
@@ -172,12 +185,25 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       
+      - name: Debug SMTP Configuration (E2E)
+        if: always()
+        run: |
+          echo "=== SMTP Configuration Debug (E2E) ==="
+          echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
+          echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
+          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME && '***SET***' || '***NOT SET***' }}"
+          echo "SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD && '***SET***' || '***NOT SET***' }}"
+          echo "SMTP_USERNAME (masked): ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD (masked): ${{ secrets.SMTP_PASSWORD }}"
+          echo "======================================"
+      
       - name: Send E2E test notification
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
           server_port: ${{ secrets.SMTP_PORT || 587 }}
+          secure: false
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: |
@@ -249,12 +275,25 @@ jobs:
             echo "color=orange" >> $GITHUB_OUTPUT
           fi
       
+      - name: Debug SMTP Configuration (Final)
+        if: always()
+        run: |
+          echo "=== SMTP Configuration Debug (Final) ==="
+          echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
+          echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
+          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME && '***SET***' || '***NOT SET***' }}"
+          echo "SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD && '***SET***' || '***NOT SET***' }}"
+          echo "SMTP_USERNAME (masked): ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD (masked): ${{ secrets.SMTP_PASSWORD }}"
+          echo "========================================="
+      
       - name: Send final CI notification
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
           server_port: ${{ secrets.SMTP_PORT || 587 }}
+          secure: false
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: |
