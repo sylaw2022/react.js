@@ -74,7 +74,7 @@ jobs:
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
           SMTP_USERNAME="groklord2@gmail.com"
-          SMTP_PASSWORD="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"
+          SMTP_PASSWORD="zqkycgwmjdvbytpi"
           echo "SMTP_USERNAME: groklord2@gmail.com (hardcoded)"
           echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
           echo "SMTP_USERNAME value: groklord2@gmail.com"
@@ -90,7 +90,7 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT || 587 }}
           secure: false
           username: groklord2@gmail.com
-          password: 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
+          password: zqkycgwmjdvbytpi
           subject: |
             GitHub Actions CI - Test Job (Node ${{ matrix.node-version }}) - ${{ job.status }}
           to: ${{ env.EMAIL_TO }}
@@ -195,7 +195,7 @@ jobs:
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
           SMTP_USERNAME="groklord2@gmail.com"
-          SMTP_PASSWORD="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"
+          SMTP_PASSWORD="zqkycgwmjdvbytpi"
           echo "SMTP_USERNAME: groklord2@gmail.com (hardcoded)"
           echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
           echo "SMTP_USERNAME value: groklord2@gmail.com"
@@ -211,7 +211,7 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT || 587 }}
           secure: false
           username: groklord2@gmail.com
-          password: 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
+          password: zqkycgwmjdvbytpi
           subject: |
             GitHub Actions CI - E2E Tests - ${{ job.status }}
           to: ${{ env.EMAIL_TO }}
@@ -288,7 +288,7 @@ jobs:
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
           SMTP_USERNAME="groklord2@gmail.com"
-          SMTP_PASSWORD="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"
+          SMTP_PASSWORD="zqkycgwmjdvbytpi"
           echo "SMTP_USERNAME: groklord2@gmail.com (hardcoded)"
           echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
           echo "SMTP_USERNAME value: groklord2@gmail.com"
@@ -304,7 +304,7 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT || 587 }}
           secure: false
           username: groklord2@gmail.com
-          password: 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
+          password: zqkycgwmjdvbytpi
           subject: |
             ${{ steps.workflow_status.outputs.emoji }} GitHub Actions CI - ${{ steps.workflow_status.outputs.status }} - ${{ github.repository }}
           to: ${{ env.EMAIL_TO }}
