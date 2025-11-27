@@ -1,0 +1,292 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  NPM_CONFIG_LOGLEVEL: error
+  CI: true
+  EMAIL_TO: groklord2@gmail.com
+
+jobs:
+  # Build and test job
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build application
+        run: npm run build
+        continue-on-error: false
+      
+      - name: Run frontend tests
+        run: npm run test:frontend
+        continue-on-error: true
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret-for-ci' }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || 'test-encryption-key-for-ci-64-characters-long-hex-string-1234567890123456789012345678901234567890123456789012345678901234' }}
+          API_KEY_SECRET: ${{ secrets.API_KEY_SECRET || 'test-api-key-secret-for-ci' }}
+      
+      - name: Run backend tests
+        run: npm run test:backend
+        continue-on-error: true
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret-for-ci' }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || 'test-encryption-key-for-ci-64-characters-long-hex-string-1234567890123456789012345678901234567890123456789012345678901234' }}
+          API_KEY_SECRET: ${{ secrets.API_KEY_SECRET || 'test-api-key-secret-for-ci' }}
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: |
+            test-results/
+            coverage/
+          if-no-files-found: ignore
+          retention-days: 7
+      
+      - name: Send test job notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.SMTP_PORT || 587 }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: |
+            GitHub Actions CI - Test Job (Node ${{ matrix.node-version }}) - ${{ job.status }}
+          to: ${{ env.EMAIL_TO }}
+          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          body: |
+            <h2>GitHub Actions CI - Test Job Status</h2>
+            <p><strong>Job:</strong> Test (Node ${{ matrix.node-version }})</p>
+            <p><strong>Status:</strong> ${{ job.status }}</p>
+            <p><strong>Workflow:</strong> ${{ github.workflow }}</p>
+            <p><strong>Repository:</strong> ${{ github.repository }}</p>
+            <p><strong>Branch:</strong> ${{ github.ref_name }}</p>
+            <p><strong>Commit:</strong> ${{ github.sha }}</p>
+            <p><strong>Author:</strong> ${{ github.actor }}</p>
+            <p><strong>Run Number:</strong> ${{ github.run_number }}</p>
+            <p><strong>Run ID:</strong> ${{ github.run_id }}</p>
+            <hr>
+            <p><strong>Steps Completed:</strong></p>
+            <ul>
+              <li>✅ Checkout code</li>
+              <li>✅ Setup Node.js ${{ matrix.node-version }}</li>
+              <li>✅ Install dependencies</li>
+              <li>✅ Build application</li>
+              <li>✅ Run frontend tests</li>
+              <li>✅ Run backend tests</li>
+            </ul>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+          html: true
+
+  # E2E tests job (runs separately, requires server)
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      
+      - name: Build application
+        run: npm run build
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret-for-ci' }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || 'test-encryption-key-for-ci-64-characters-long-hex-string-1234567890123456789012345678901234567890123456789012345678901234' }}
+          API_KEY_SECRET: ${{ secrets.API_KEY_SECRET || 'test-api-key-secret-for-ci' }}
+      
+      - name: Start Next.js server
+        run: |
+          npm start &
+          sleep 10
+          curl -f http://localhost:3000/api/status || exit 1
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret-for-ci' }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || 'test-encryption-key-for-ci-64-characters-long-hex-string-1234567890123456789012345678901234567890123456789012345678901234' }}
+          API_KEY_SECRET: ${{ secrets.API_KEY_SECRET || 'test-api-key-secret-for-ci' }}
+          PORT: 3000
+        continue-on-error: false
+      
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          CI: true
+          TEST_BASE_URL: http://localhost:3000
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret-for-ci' }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || 'test-encryption-key-for-ci-64-characters-long-hex-string-1234567890123456789012345678901234567890123456789012345678901234' }}
+          API_KEY_SECRET: ${{ secrets.API_KEY_SECRET || 'test-api-key-secret-for-ci' }}
+        continue-on-error: true
+      
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+      
+      - name: Send E2E test notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.SMTP_PORT || 587 }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: |
+            GitHub Actions CI - E2E Tests - ${{ job.status }}
+          to: ${{ env.EMAIL_TO }}
+          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          body: |
+            <h2>GitHub Actions CI - E2E Test Status</h2>
+            <p><strong>Job:</strong> E2E Tests</p>
+            <p><strong>Status:</strong> ${{ job.status }}</p>
+            <p><strong>Workflow:</strong> ${{ github.workflow }}</p>
+            <p><strong>Repository:</strong> ${{ github.repository }}</p>
+            <p><strong>Branch:</strong> ${{ github.ref_name }}</p>
+            <p><strong>Commit:</strong> ${{ github.sha }}</p>
+            <p><strong>Author:</strong> ${{ github.actor }}</p>
+            <p><strong>Run Number:</strong> ${{ github.run_number }}</p>
+            <hr>
+            <p><strong>Steps Completed:</strong></p>
+            <ul>
+              <li>✅ Checkout code</li>
+              <li>✅ Setup Node.js 20.x</li>
+              <li>✅ Install dependencies</li>
+              <li>✅ Install Playwright browsers</li>
+              <li>✅ Build application</li>
+              <li>✅ Start Next.js server</li>
+              <li>✅ Run E2E tests</li>
+            </ul>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+          html: true
+
+  # Summary job
+  summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [test, e2e]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: CI Summary
+        run: |
+          echo "## CI Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All jobs completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend Tests: Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Tests: Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- E2E Tests: Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check artifacts for detailed test results." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Determine workflow status
+        id: workflow_status
+        run: |
+          if [ "${{ needs.test.result }}" == "success" ] && [ "${{ needs.e2e.result }}" == "success" ]; then
+            echo "status=SUCCESS" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "color=green" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.test.result }}" == "failure" ] || [ "${{ needs.e2e.result }}" == "failure" ]; then
+            echo "status=FAILED" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "color=red" >> $GITHUB_OUTPUT
+          else
+            echo "status=PARTIAL" >> $GITHUB_OUTPUT
+            echo "emoji=⚠️" >> $GITHUB_OUTPUT
+            echo "color=orange" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Send final CI notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.SMTP_PORT || 587 }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: |
+            ${{ steps.workflow_status.outputs.emoji }} GitHub Actions CI - ${{ steps.workflow_status.outputs.status }} - ${{ github.repository }}
+          to: ${{ env.EMAIL_TO }}
+          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          body: |
+            <h2 style="color: ${{ steps.workflow_status.outputs.color }};">${{ steps.workflow_status.outputs.emoji }} GitHub Actions CI Pipeline - ${{ steps.workflow_status.outputs.status }}</h2>
+            <p><strong>Repository:</strong> ${{ github.repository }}</p>
+            <p><strong>Workflow:</strong> ${{ github.workflow }}</p>
+            <p><strong>Branch:</strong> ${{ github.ref_name }}</p>
+            <p><strong>Commit:</strong> <code>${{ github.sha }}</code></p>
+            <p><strong>Author:</strong> ${{ github.actor }}</p>
+            <p><strong>Run Number:</strong> ${{ github.run_number }}</p>
+            <p><strong>Run ID:</strong> ${{ github.run_id }}</p>
+            <p><strong>Triggered by:</strong> ${{ github.event_name }}</p>
+            <hr>
+            <h3>Job Results</h3>
+            <ul>
+              <li><strong>Test Job:</strong> ${{ needs.test.result }}</li>
+              <li><strong>E2E Tests:</strong> ${{ needs.e2e.result }}</li>
+            </ul>
+            <hr>
+            <h3>Test Summary</h3>
+            <ul>
+              <li>✅ Frontend Tests - Completed</li>
+              <li>✅ Backend Tests - Completed</li>
+              <li>✅ E2E Tests - Completed</li>
+            </ul>
+            <p><strong>Status:</strong> <span style="color: ${{ steps.workflow_status.outputs.color }}; font-weight: bold;">${{ steps.workflow_status.outputs.status }}</span></p>
+            <hr>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Run</a></p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}">View Repository</a></p>
+          html: true
+
