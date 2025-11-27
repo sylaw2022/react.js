@@ -73,20 +73,12 @@ jobs:
           echo "=== SMTP Configuration Debug ==="
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
-          SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}"
-          SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
-          if [ -n "$SMTP_USERNAME" ]; then
-            echo "SMTP_USERNAME: ***SET*** (length: ${#SMTP_USERNAME})"
-          else
-            echo "SMTP_USERNAME: ***NOT SET***"
-          fi
-          if [ -n "$SMTP_PASSWORD" ]; then
-            echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
-          else
-            echo "SMTP_PASSWORD: ***NOT SET***"
-          fi
-          echo "SMTP_USERNAME value (will be masked): ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD value (will be masked): ${{ secrets.SMTP_PASSWORD }}"
+          SMTP_USERNAME="groklord2@gmail.com"
+          SMTP_PASSWORD="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"
+          echo "SMTP_USERNAME: groklord2@gmail.com (hardcoded)"
+          echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
+          echo "SMTP_USERNAME value: groklord2@gmail.com"
+          echo "SMTP_PASSWORD value: ***MASKED***"
           echo "Note: GitHub will mask secret values in logs"
           echo "================================"
       
@@ -97,12 +89,12 @@ jobs:
           server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
           server_port: ${{ secrets.SMTP_PORT || 587 }}
           secure: false
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          username: groklord2@gmail.com
+          password: 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
           subject: |
             GitHub Actions CI - Test Job (Node ${{ matrix.node-version }}) - ${{ job.status }}
           to: ${{ env.EMAIL_TO }}
-          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          from: groklord2@gmail.com
           body: |
             <h2>GitHub Actions CI - Test Job Status</h2>
             <p><strong>Job:</strong> Test (Node ${{ matrix.node-version }})</p>
@@ -202,20 +194,12 @@ jobs:
           echo "=== SMTP Configuration Debug (E2E) ==="
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
-          SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}"
-          SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
-          if [ -n "$SMTP_USERNAME" ]; then
-            echo "SMTP_USERNAME: ***SET*** (length: ${#SMTP_USERNAME})"
-          else
-            echo "SMTP_USERNAME: ***NOT SET***"
-          fi
-          if [ -n "$SMTP_PASSWORD" ]; then
-            echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
-          else
-            echo "SMTP_PASSWORD: ***NOT SET***"
-          fi
-          echo "SMTP_USERNAME value (will be masked): ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD value (will be masked): ${{ secrets.SMTP_PASSWORD }}"
+          SMTP_USERNAME="groklord2@gmail.com"
+          SMTP_PASSWORD="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"
+          echo "SMTP_USERNAME: groklord2@gmail.com (hardcoded)"
+          echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
+          echo "SMTP_USERNAME value: groklord2@gmail.com"
+          echo "SMTP_PASSWORD value: ***MASKED***"
           echo "Note: GitHub will mask secret values in logs"
           echo "======================================"
       
@@ -226,12 +210,12 @@ jobs:
           server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
           server_port: ${{ secrets.SMTP_PORT || 587 }}
           secure: false
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          username: groklord2@gmail.com
+          password: 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
           subject: |
             GitHub Actions CI - E2E Tests - ${{ job.status }}
           to: ${{ env.EMAIL_TO }}
-          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          from: groklord2@gmail.com
           body: |
             <h2>GitHub Actions CI - E2E Test Status</h2>
             <p><strong>Job:</strong> E2E Tests</p>
@@ -303,20 +287,12 @@ jobs:
           echo "=== SMTP Configuration Debug (Final) ==="
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
-          SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}"
-          SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
-          if [ -n "$SMTP_USERNAME" ]; then
-            echo "SMTP_USERNAME: ***SET*** (length: ${#SMTP_USERNAME})"
-          else
-            echo "SMTP_USERNAME: ***NOT SET***"
-          fi
-          if [ -n "$SMTP_PASSWORD" ]; then
-            echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
-          else
-            echo "SMTP_PASSWORD: ***NOT SET***"
-          fi
-          echo "SMTP_USERNAME value (will be masked): ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD value (will be masked): ${{ secrets.SMTP_PASSWORD }}"
+          SMTP_USERNAME="groklord2@gmail.com"
+          SMTP_PASSWORD="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"
+          echo "SMTP_USERNAME: groklord2@gmail.com (hardcoded)"
+          echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
+          echo "SMTP_USERNAME value: groklord2@gmail.com"
+          echo "SMTP_PASSWORD value: ***MASKED***"
           echo "Note: GitHub will mask secret values in logs"
           echo "========================================="
       
@@ -327,12 +303,12 @@ jobs:
           server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
           server_port: ${{ secrets.SMTP_PORT || 587 }}
           secure: false
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          username: groklord2@gmail.com
+          password: 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
           subject: |
             ${{ steps.workflow_status.outputs.emoji }} GitHub Actions CI - ${{ steps.workflow_status.outputs.status }} - ${{ github.repository }}
           to: ${{ env.EMAIL_TO }}
-          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          from: groklord2@gmail.com
           body: |
             <h2 style="color: ${{ steps.workflow_status.outputs.color }};">${{ steps.workflow_status.outputs.emoji }} GitHub Actions CI Pipeline - ${{ steps.workflow_status.outputs.status }}</h2>
             <p><strong>Repository:</strong> ${{ github.repository }}</p>
