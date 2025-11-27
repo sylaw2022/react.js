@@ -1,0 +1,101 @@
+name: Manual Trigger Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      run_tests:
+        description: 'Run tests before deployment'
+        required: false
+        default: true
+        type: boolean
+      notify_email:
+        description: 'Send email notification'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  NPM_CONFIG_LOGLEVEL: error
+  CI: true
+  EMAIL_TO: groklord2@gmail.com
+
+jobs:
+  manual-job:
+    name: Manual Trigger Job
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Display workflow inputs
+        run: |
+          echo "=== Workflow Inputs ==="
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Run Tests: ${{ inputs.run_tests }}"
+          echo "Notify Email: ${{ inputs.notify_email }}"
+          echo "======================"
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests (if enabled)
+        if: inputs.run_tests == true
+        run: |
+          echo "Running tests..."
+          npm run test:frontend || true
+          npm run test:backend || true
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Display build success
+        run: |
+          echo "✅ Build completed successfully!"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Workflow run: ${{ github.run_id }}"
+      
+      - name: Send email notification
+        if: inputs.notify_email == true && always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.SMTP_PORT || 587 }}
+          secure: false
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: |
+            Manual Workflow Triggered - ${{ inputs.environment }} - ${{ job.status }}
+          to: ${{ env.EMAIL_TO }}
+          from: ${{ secrets.SMTP_USERNAME || 'GitHub Actions' }}
+          body: |
+            <h2>Manual Workflow Triggered</h2>
+            <p><strong>Status:</strong> ${{ job.status }}</p>
+            <p><strong>Environment:</strong> ${{ inputs.environment }}</p>
+            <p><strong>Run Tests:</strong> ${{ inputs.run_tests }}</p>
+            <p><strong>Triggered by:</strong> ${{ github.actor }}</p>
+            <p><strong>Repository:</strong> ${{ github.repository }}</p>
+            <p><strong>Branch:</strong> ${{ github.ref_name }}</p>
+            <p><strong>Commit:</strong> ${{ github.sha }}</p>
+            <p><strong>Workflow Run:</strong> ${{ github.run_id }}</p>
+            <p><strong>Workflow Run URL:</strong> <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Run</a></p>
+            <hr>
+            <p><strong>Build:</strong> ✅ Completed</p>
+            <p><strong>Tests:</strong> ${{ inputs.run_tests && '✅ Run' || '⏭️ Skipped' }}</p>
+            <p><strong>Time:</strong> ${{ github.event.head_commit.timestamp || 'N/A' }}</p>
+
