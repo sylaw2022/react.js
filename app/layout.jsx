@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'React Hello World',
-  description: 'A simple React.js hello world application',
+  title: 'React App',
+  description: 'A React.js application with authentication and API features',
 }
 
 export default function RootLayout({ children }) {

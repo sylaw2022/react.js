@@ -8,7 +8,7 @@ function App() {
       fontSize: '2rem',
       fontFamily: 'Arial, sans-serif'
     }}>
-      <h1>Hello World!</h1>
+      <h1>React App</h1>
     </div>
   )
 }

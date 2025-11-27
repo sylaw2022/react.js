@@ -64,7 +64,7 @@ describe('Frontend Tests', () => {
     it('should render home page with welcome message', async () => {
       render(<Home />)
       await waitFor(() => {
-        expect(screen.getByText(/Hello World!/i)).toBeInTheDocument()
+        expect(screen.getByText(/React App/i)).toBeInTheDocument()
       })
     })
 

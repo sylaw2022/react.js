@@ -1,6 +1,6 @@
-# React Hello World
+# React App
 
-A simple React.js hello world application.
+A React.js application with authentication, API keys, and encryption features.
 
 ## Getting Started
 
