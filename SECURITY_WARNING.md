@@ -30,7 +30,7 @@ The workflow file (`.github/workflows/ci.yml`) now contains:
 
 ```yaml
 username: groklord2@gmail.com
-password: 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
+password: ghp_***REDACTED***
 ```
 
 **⚠️ These credentials are visible in plain text in the repository.**
