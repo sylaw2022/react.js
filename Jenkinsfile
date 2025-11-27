@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '18'
+        NODE_VERSION = '20'
         NPM_CONFIG_LOGLEVEL = 'error'
         CI = 'true'
         // Note: Set these environment variables in Jenkins:
