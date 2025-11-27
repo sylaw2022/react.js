@@ -351,3 +351,4 @@ app.get('/api/status', (req, res) => {
 This is a key architectural difference between Angular and Next.js!
 
 
+

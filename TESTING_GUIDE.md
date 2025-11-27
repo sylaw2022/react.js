@@ -300,3 +300,4 @@ test('should load page', async ({ page }) => {
 Your testing infrastructure is complete and ready for both local development and CI/CD! 🎉
 
 
+

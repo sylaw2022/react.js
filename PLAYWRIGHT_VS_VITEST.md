@@ -84,3 +84,4 @@ npm run test:frontend
 The module resolution error is from Turbopack analyzing files during server startup, not from Playwright trying to run Vitest tests.
 
 
+

@@ -289,3 +289,4 @@ To verify SPA behavior:
 Your application is now a fully functional SPA with user registration and login! 🎉
 
 
+

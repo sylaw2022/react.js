@@ -97,3 +97,4 @@ To open last HTML report run:
 The E2E tests should now show full status information!
 
 
+
