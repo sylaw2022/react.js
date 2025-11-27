@@ -99,6 +99,7 @@ vi.mock('@/lib/token', () => ({
     return `mock-token-${userId}`
   }),
   verifyTokenFromRequest: vi.fn(),
+  verifyTokenAndGetUser: vi.fn(),
   extractTokenFromRequest: vi.fn(),
 }))
 
@@ -362,10 +363,18 @@ describe('Backend API Tests', () => {
 
   describe('Protected API', () => {
     it('should allow access with valid token', async () => {
-      const { verifyTokenFromRequest } = await import('@/lib/token')
-      // verifyTokenFromRequest is synchronous, not async
-      verifyTokenFromRequest.mockReturnValue({
-        user: { userId: 1, username: 'testuser', role: 'user' },
+      const { verifyTokenAndGetUser } = await import('@/lib/token')
+      // verifyTokenAndGetUser is async and returns full user data from database
+      verifyTokenAndGetUser.mockResolvedValue({
+        user: {
+          id: 1,
+          userId: 1,
+          username: 'testuser',
+          email: 'test@example.com',
+          role: 'user',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
         error: null,
       })
 
@@ -384,9 +393,9 @@ describe('Backend API Tests', () => {
     })
 
     it('should reject access without token', async () => {
-      const { verifyTokenFromRequest } = await import('@/lib/token')
-      // verifyTokenFromRequest is synchronous, not async
-      verifyTokenFromRequest.mockReturnValue({
+      const { verifyTokenAndGetUser } = await import('@/lib/token')
+      // verifyTokenAndGetUser is async
+      verifyTokenAndGetUser.mockResolvedValue({
         user: null,
         error: new Error('No token provided'),
       })
