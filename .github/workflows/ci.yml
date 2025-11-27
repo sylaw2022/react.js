@@ -73,10 +73,21 @@ jobs:
           echo "=== SMTP Configuration Debug ==="
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
-          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME && '***SET***' || '***NOT SET***' }}"
-          echo "SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD && '***SET***' || '***NOT SET***' }}"
-          echo "SMTP_USERNAME (masked): ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD (masked): ${{ secrets.SMTP_PASSWORD }}"
+          SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}"
+          SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
+          if [ -n "$SMTP_USERNAME" ]; then
+            echo "SMTP_USERNAME: ***SET*** (length: ${#SMTP_USERNAME})"
+          else
+            echo "SMTP_USERNAME: ***NOT SET***"
+          fi
+          if [ -n "$SMTP_PASSWORD" ]; then
+            echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
+          else
+            echo "SMTP_PASSWORD: ***NOT SET***"
+          fi
+          echo "SMTP_USERNAME value (will be masked): ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD value (will be masked): ${{ secrets.SMTP_PASSWORD }}"
+          echo "Note: GitHub will mask secret values in logs"
           echo "================================"
       
       - name: Send test job notification
@@ -191,10 +202,21 @@ jobs:
           echo "=== SMTP Configuration Debug (E2E) ==="
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
-          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME && '***SET***' || '***NOT SET***' }}"
-          echo "SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD && '***SET***' || '***NOT SET***' }}"
-          echo "SMTP_USERNAME (masked): ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD (masked): ${{ secrets.SMTP_PASSWORD }}"
+          SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}"
+          SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
+          if [ -n "$SMTP_USERNAME" ]; then
+            echo "SMTP_USERNAME: ***SET*** (length: ${#SMTP_USERNAME})"
+          else
+            echo "SMTP_USERNAME: ***NOT SET***"
+          fi
+          if [ -n "$SMTP_PASSWORD" ]; then
+            echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
+          else
+            echo "SMTP_PASSWORD: ***NOT SET***"
+          fi
+          echo "SMTP_USERNAME value (will be masked): ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD value (will be masked): ${{ secrets.SMTP_PASSWORD }}"
+          echo "Note: GitHub will mask secret values in logs"
           echo "======================================"
       
       - name: Send E2E test notification
@@ -281,10 +303,21 @@ jobs:
           echo "=== SMTP Configuration Debug (Final) ==="
           echo "SMTP_SERVER: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}"
           echo "SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}"
-          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME && '***SET***' || '***NOT SET***' }}"
-          echo "SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD && '***SET***' || '***NOT SET***' }}"
-          echo "SMTP_USERNAME (masked): ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD (masked): ${{ secrets.SMTP_PASSWORD }}"
+          SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}"
+          SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
+          if [ -n "$SMTP_USERNAME" ]; then
+            echo "SMTP_USERNAME: ***SET*** (length: ${#SMTP_USERNAME})"
+          else
+            echo "SMTP_USERNAME: ***NOT SET***"
+          fi
+          if [ -n "$SMTP_PASSWORD" ]; then
+            echo "SMTP_PASSWORD: ***SET*** (length: ${#SMTP_PASSWORD})"
+          else
+            echo "SMTP_PASSWORD: ***NOT SET***"
+          fi
+          echo "SMTP_USERNAME value (will be masked): ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD value (will be masked): ${{ secrets.SMTP_PASSWORD }}"
+          echo "Note: GitHub will mask secret values in logs"
           echo "========================================="
       
       - name: Send final CI notification
